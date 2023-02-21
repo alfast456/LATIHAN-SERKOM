@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+// import 'package:flutter/src/widgets/framework.dart';
+// import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_serkom/utility/dimenResponsive.dart';
 import 'package:flutter_serkom/widget/textlabel.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,16 +24,47 @@ class _registerformState extends State<registerform> {
   @override
   void initState() {
     super.initState();
-    _getLocation();
-    _getImage();
+    // _getLocation();
+    // _getImage();
   }
 
   Future<void> _getLocation() async {
-    // mendapatkan lokasi GPS menggunakan package geolocator
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // cek apakah GPS sudah aktif
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // GPS belum aktif
+      return Future.error('Location services are disabled.');
+    }
+
+    // cek apakah aplikasi sudah mendapatkan izin untuk mengakses lokasi
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      // aplikasi belum mendapatkan izin untuk mengakses lokasi
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // pengguna menolak untuk memberikan izin
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // pengguna menolak untuk memberikan izin secara permanen
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
     final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     _location = "${position.latitude}, ${position.longitude}";
     // lalu disimpan ke dalam variabel _location
+  }
+
+  void _pilihJK(String? value) {
+    setState(() {
+      _JK = value!;
+    });
   }
 
   Future<void> _getImage() async {
@@ -47,12 +78,6 @@ class _registerformState extends State<registerform> {
       } else {
         print('No image selected.');
       }
-    });
-  }
-
-  void _pilihJK(String? value) {
-    setState(() {
-      _JK = value!;
     });
   }
 
@@ -145,7 +170,7 @@ class _registerformState extends State<registerform> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: Text("Foto Anda"),
+                                  title: Text("Pilih Foto Anda"),
                                   content: Image.file(_image),
                                 );
                               });
