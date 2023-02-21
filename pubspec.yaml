@@ -41,6 +41,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   cloud_firestore: ^4.4.2
   firebase_storage: ^11.0.13
+  syncfusion_flutter_datagrid: ^20.4.51
 
 dev_dependencies:
   flutter_test:

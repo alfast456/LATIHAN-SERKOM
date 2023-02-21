@@ -65,7 +65,8 @@ class _registerformState extends State<registerform> {
     }
     final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    _location = "${position.latitude}, ${position.longitude}";
+    _location =
+        position.latitude.toString() + "," + position.longitude.toString();
     // lalu disimpan ke dalam variabel _location
   }
 
@@ -121,18 +122,18 @@ class _registerformState extends State<registerform> {
       print("Error: $e");
     }
 
-    // // reset form
-    // namaText.clear();
-    // alamatText.clear();
-    // nohpText.clear();
-    // _JK = "";
-    // _location = "";
-    // _image = File("");
+    // reset form
+    namaText.clear();
+    alamatText.clear();
+    nohpText.clear();
+    _JK = "";
+    _location = "";
+    _image = File("");
 
     // redirect ke hasil.dart
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => hasil()),
+      MaterialPageRoute(builder: (context) => TablePage()),
     );
   }
 
@@ -216,7 +217,7 @@ class _registerformState extends State<registerform> {
                               builder: (context) {
                                 return AlertDialog(
                                   title: Text("Lokasi Anda"),
-                                  content: Text('Lokasi saat ini: $_location'),
+                                  content: Text(_location),
                                 );
                               });
                         },
