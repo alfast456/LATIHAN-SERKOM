@@ -4,12 +4,14 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_serkom/screen/hasil.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 // import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_serkom/utility/dimenResponsive.dart';
 import 'package:flutter_serkom/widget/textlabel.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_serkom/screen/hasil.dart';
 
 class registerform extends StatefulWidget {
   const registerform({super.key});
@@ -118,6 +120,20 @@ class _registerformState extends State<registerform> {
     } catch (e) {
       print("Error: $e");
     }
+
+    // // reset form
+    // namaText.clear();
+    // alamatText.clear();
+    // nohpText.clear();
+    // _JK = "";
+    // _location = "";
+    // _image = File("");
+
+    // redirect ke hasil.dart
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => hasil()),
+    );
   }
 
   @override
@@ -239,7 +255,7 @@ class _registerformState extends State<registerform> {
                       if (_formKey.currentState!.validate()) {
                         await _submitForm();
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Processing Data")));
+                            SnackBar(content: Text("Data Berhasil Disimpan")));
                       }
                     },
                     child: Text("Submit"),
