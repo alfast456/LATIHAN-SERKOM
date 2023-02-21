@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 // import 'package:flutter/src/widgets/placeholder.dart';
@@ -17,6 +20,9 @@ class registerform extends StatefulWidget {
 
 class _registerformState extends State<registerform> {
   final _formKey = GlobalKey<FormState>();
+  final namaText = TextEditingController();
+  final alamatText = TextEditingController();
+  final nohpText = TextEditingController();
   late String _location;
   late File _image;
   String _JK = "";
@@ -71,6 +77,7 @@ class _registerformState extends State<registerform> {
     // mengambil gambar dari galeri menggunakan package image_picker
     final picker = ImagePicker();
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    print("File: ${pickedFile?.path}");
 
     setState(() {
       if (pickedFile != null) {
@@ -81,16 +88,49 @@ class _registerformState extends State<registerform> {
     });
   }
 
+  Future<void> _submitForm() async {
+    // proses submit form
+    // print("Nama: ${namaText.text}");
+    try {
+      await FirebaseFirestore.instance.collection('serkom').add({
+        'namaText': namaText.text,
+        'alamatText': alamatText.text,
+        'nohpText': nohpText.text,
+        '_pilihJK': _JK,
+        '_getLocation': _location,
+      });
+    } catch (e) {
+      print("Error: $e");
+    }
+
+    // proses upload foto ke Firebase Storage
+    try {
+      if (_image != null) {
+        // upload foto ke Firebase Storage
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('serkom')
+            .child(namaText.text + '.jpg');
+        await ref.putFile(_image);
+        final url = await ref.getDownloadURL();
+        print("URL: $url");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     AdapterS.size(context: context);
-    TextEditingController? namaText;
-    TextEditingController? alamatText;
-    TextEditingController? nohpText;
+    // TextEditingController? namaText = TextEditingController();
+    // TextEditingController? alamatText = TextEditingController();
+    // TextEditingController? nohpText = TextEditingController();
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: 40, left: 40, right: 40),
         child: Form(
+          key: _formKey,
           child: SizedBox(
             width: AdapterS.screenWidth,
             child: Column(
@@ -99,22 +139,33 @@ class _registerformState extends State<registerform> {
                 Text("Form Pendaftaran TOEFL"),
                 Padding(
                   padding: EdgeInsets.only(top: 40),
-                  child: labelText(
-                      fieldLabel: "Nama", textController: namaText, size: 128),
+                  child: TextField(
+                    controller: namaText,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Nama Lengkap',
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 40),
-                  child: labelText(
-                      fieldLabel: "Alamat lengkap",
-                      textController: alamatText,
-                      size: 128),
+                  child: TextField(
+                    controller: alamatText,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Alamat',
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 40),
-                  child: labelText(
-                      fieldLabel: "No. HP",
-                      textController: nohpText,
-                      size: 128),
+                  child: TextField(
+                    controller: nohpText,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'No. HP',
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 40),
@@ -183,8 +234,10 @@ class _registerformState extends State<registerform> {
                 Padding(
                   padding: EdgeInsets.only(top: 40),
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      // print(namaText?.text.toString());
                       if (_formKey.currentState!.validate()) {
+                        await _submitForm();
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Processing Data")));
                       }

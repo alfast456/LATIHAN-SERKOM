@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "482469968465",
+    "project_id": "serkom-8410e",
+    "storage_bucket": "serkom-8410e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482469968465:android:744cd0e7b0e3e6f4b81670",
+        "android_client_info": {
+          "package_name": "com.example.flutter_serkom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482469968465-sidinl8dvib19ibsipasd7lises8s1jo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl9MrRyVVD5Y3VPPwsfgJsVsQ-3M1cie8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482469968465-sidinl8dvib19ibsipasd7lises8s1jo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "482469968465-d9lsho310mm332dj7v1r2s5c14pijbh6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterApplication1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
