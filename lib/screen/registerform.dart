@@ -25,6 +25,7 @@ class _registerformState extends State<registerform> {
   final namaText = TextEditingController();
   final alamatText = TextEditingController();
   final nohpText = TextEditingController();
+  // final url = TextEditingController();
   late String _location;
   late File _image;
   String _JK = "";
@@ -94,17 +95,6 @@ class _registerformState extends State<registerform> {
   Future<void> _submitForm() async {
     // proses submit form
     // print("Nama: ${namaText.text}");
-    try {
-      await FirebaseFirestore.instance.collection('serkom').add({
-        'namaText': namaText.text,
-        'alamatText': alamatText.text,
-        'nohpText': nohpText.text,
-        '_pilihJK': _JK,
-        '_getLocation': _location,
-      });
-    } catch (e) {
-      print("Error: $e");
-    }
 
     // proses upload foto ke Firebase Storage
     try {
@@ -122,6 +112,19 @@ class _registerformState extends State<registerform> {
       print("Error: $e");
     }
 
+    // simpan data ke Firebase Firestore
+    try {
+      await FirebaseFirestore.instance.collection('serkom').add({
+        'namaText': namaText.text,
+        'alamatText': alamatText.text,
+        'nohpText': nohpText.text,
+        '_pilihJK': _JK,
+        '_getLocation': _location,
+        // '_getImage': url,
+      });
+    } catch (e) {
+      print("Error: $e");
+    }
     // reset form
     namaText.clear();
     alamatText.clear();
@@ -248,6 +251,16 @@ class _registerformState extends State<registerform> {
                     ],
                   ),
                 ),
+                // Padding(
+                //   padding: EdgeInsets.only(top: 40),
+                //   child: TextField(
+                //     controller: url,
+                //     decoration: InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       labelText: 'URL Foto',
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: EdgeInsets.only(top: 40),
                   child: ElevatedButton(

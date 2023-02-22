@@ -1,7 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_serkom/firebase_options.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TablePage extends StatefulWidget {
   const TablePage({super.key});
@@ -27,7 +29,8 @@ class _TablePageState extends State<TablePage> {
     });
 
     querySnapshot = await firestore.collection('serkom').get();
-
+    // print(foto);
+    // cred = credentials.Certificate('path/to/serviceAccountKey.json');
     setState(() {
       isLoading = false;
     });
@@ -54,15 +57,34 @@ class _TablePageState extends State<TablePage> {
                     DataColumn(label: Text('No. HP')),
                     DataColumn(label: Text('Jenis Kelamin')),
                     DataColumn(label: Text('Lokasi')),
+                    DataColumn(label: Text('Foto')),
                   ],
                   rows: querySnapshot.docs
-                      .map((document) => DataRow(cells: [
-                            DataCell(Text(document['namaText'])),
-                            DataCell(Text(document['alamatText'])),
-                            DataCell(Text(document['nohpText'])),
-                            DataCell(Text(document['_pilihJK'])),
-                            DataCell(Text(document['_getLocation'])),
-                          ]))
+                      .map((document) => DataRow(
+                            cells: [
+                              DataCell(Text(document['namaText'])),
+                              DataCell(Text(document['alamatText'])),
+                              DataCell(Text(document['nohpText'])),
+                              DataCell(Text(document['_pilihJK'])),
+                              DataCell(Text(document['_getLocation'])),
+                              DataCell(FutureBuilder<String>(
+                                future: FirebaseStorage.instance
+                                    .ref()
+                                    .child('serkom')
+                                    .child(document['namaText'] + '.jpg')
+                                    .getDownloadURL(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Image.network(snapshot.data!);
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error : ${snapshot.error}');
+                                  } else {
+                                    return CircularProgressIndicator();
+                                  }
+                                },
+                              )),
+                            ],
+                          ))
                       .toList(),
                 ),
               ),
